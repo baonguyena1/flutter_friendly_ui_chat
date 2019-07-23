@@ -93,7 +93,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     return IconTheme(
         data: IconThemeData(color: Theme.of(context).accentColor),
         child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
+            padding: const EdgeInsets.only(left: 16.0),
             child: Row(
               children: <Widget>[
                 Expanded(
@@ -111,7 +111,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                  margin: const EdgeInsets.only(left: 8.0),
                   child: Theme.of(context).platform == TargetPlatform.iOS
                       ? CupertinoButton(
                           child: Text('Send'),
