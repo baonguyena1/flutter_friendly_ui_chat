@@ -36,7 +36,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
-  final List<ChatMessage> _messages = <ChatMessage>[];
+  final List<ChatMessageReceiver> _messages = <ChatMessageReceiver>[];
   final TextEditingController _textController = TextEditingController();
   bool _isComposing = false;
 
@@ -55,7 +55,15 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                   Flexible(
                     child: ListView.builder(
                       padding: EdgeInsets.all(8.0),
-                      itemBuilder: (context, index) => _messages[index],
+                      // itemBuilder: (context, index) => _messages[index],
+                      itemBuilder: (buildContext, index) {
+                        return Bubble(
+                          message: 'Hi there, this is a message',
+                          time: '12:00',
+                          delivered: true,
+                          isMe: index.isEven ? false : true,
+                        );
+                      },
                       itemCount: _messages.length,
                     ),
                   ),
@@ -79,7 +87,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
 
   @override
   void dispose() {
-    for (ChatMessage message in _messages) {
+    for (ChatMessageReceiver message in _messages) {
       message.animationController.dispose();
     }
     super.dispose();
@@ -136,10 +144,11 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     setState(() {
       _isComposing = false;
     });
-    ChatMessage message = ChatMessage(
+    ChatMessageReceiver message = ChatMessageReceiver(
         text,
         AnimationController(
-            duration: Duration(milliseconds: 700), vsync: this));
+            duration: Duration(milliseconds: 700), vsync: this),
+        true);
     setState(() {
       _messages.insert(_messages.length, message);
     });
@@ -147,12 +156,13 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
   }
 }
 
-class ChatMessage extends StatelessWidget {
+class ChatMessageReceiver extends StatelessWidget {
   static const String _name = 'Bao';
   final String text;
   final AnimationController animationController;
+  final bool isSender;
 
-  ChatMessage(this.text, this.animationController);
+  ChatMessageReceiver(this.text, this.animationController, this.isSender);
 
   @override
   Widget build(BuildContext context) {
@@ -167,14 +177,16 @@ class ChatMessage extends StatelessWidget {
           Container(
             padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
             child: Row(
-              // crossAxisAlignment: CrossAxisAlignment.start,
-              // mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                CircleAvatar(
-                  child: Text(_name[0]),
+                Container(
+                  child: isSender == false 
+                  ? CircleAvatar(
+                    child: Text(_name[0]),
+                  )
+                  : null
                 ),
                 SizedBox(
-                  width: 8.0,
+                  width: isSender ? 0.0 : 8.0,
                 ),
                 Expanded(
                   child: Wrap(
@@ -206,11 +218,92 @@ class ChatMessage extends StatelessWidget {
                     ],
                   ),
                 ),
+                SizedBox(
+                  width: isSender ? 8.0 : 0.0,
+                ),
+                Container(
+                  child: isSender 
+                  ? CircleAvatar(
+                    child: Text(_name[0]),
+                  )
+                  : null
+                ),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class Bubble extends StatelessWidget {
+  Bubble({this.message, this.time, this.delivered, this.isMe});
+
+  final String message, time;
+  final delivered, isMe;
+
+  @override
+  Widget build(BuildContext context) {
+    final bg = isMe ? Colors.white : Colors.greenAccent.shade100;
+    final align = isMe ? CrossAxisAlignment.start : CrossAxisAlignment.end;
+    final icon = delivered ? Icons.done_all : Icons.done;
+    final radius = isMe
+        ? BorderRadius.only(
+            topRight: Radius.circular(5.0),
+            bottomLeft: Radius.circular(10.0),
+            bottomRight: Radius.circular(5.0),
+          )
+        : BorderRadius.only(
+            topLeft: Radius.circular(5.0),
+            bottomLeft: Radius.circular(5.0),
+            bottomRight: Radius.circular(10.0),
+          );
+    return Column(
+      crossAxisAlignment: align,
+      children: <Widget>[
+        Container(
+          margin: const EdgeInsets.all(3.0),
+          padding: const EdgeInsets.all(8.0),
+          decoration: BoxDecoration(
+            boxShadow: [
+              BoxShadow(
+                  blurRadius: .5,
+                  spreadRadius: 1.0,
+                  color: Colors.black.withOpacity(.12))
+            ],
+            color: bg,
+            borderRadius: radius,
+          ),
+          child: Stack(
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(right: 48.0),
+                child: Text(message),
+              ),
+              Positioned(
+                bottom: 0.0,
+                right: 0.0,
+                child: Row(
+                  children: <Widget>[
+                    Text(time,
+                        style: TextStyle(
+                          color: Colors.black38,
+                          fontSize: 10.0,
+                        )),
+                    SizedBox(width: 3.0),
+                    Icon(
+                      icon,
+                      size: 12.0,
+                      color: Colors.black38,
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        )
+      ],
     );
   }
 }
