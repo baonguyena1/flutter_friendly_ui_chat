@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:friendly_chat/controllers/ChatScreen.dart';
+import 'package:friendly_chat/controllers/login/Login.dart';
 
 void main() => runApp(FriendlyChatApp());
 
@@ -17,7 +16,7 @@ class FriendlyChatApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Friendly Chat',
       theme: kDefaultTheme,
-      home: ChatScreen(),
+      home: Login(),
     );
   }
 }

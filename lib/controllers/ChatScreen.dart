@@ -10,7 +10,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  final List<ChatMessage> _messages = <ChatMessage>[];
+  final List<String> _messages = <String>[];
   final TextEditingController _textController = TextEditingController();
   bool _isComposing = false;
 
@@ -29,7 +29,11 @@ class ChatScreenState extends State<ChatScreen> {
                   Flexible(
                     child: ListView.builder(
                       padding: EdgeInsets.all(8.0),
-                      itemBuilder: (context, index) => _messages[index],
+                      itemBuilder: (context, index) {
+                        final isMe = _messages.length % 2 == 0;
+                        final message = _messages[index];
+                        return ChatMessage(message, isMe);
+                      },
                       itemCount: _messages.length,
                     ),
                   ),
@@ -100,12 +104,8 @@ class ChatScreenState extends State<ChatScreen> {
     setState(() {
       _isComposing = false;
     });
-    final isMe = _messages.length % 2 == 0;
-    ChatMessage message = ChatMessage(
-        text,
-        isMe);
     setState(() {
-      _messages.insert(_messages.length, message);
+      _messages.insert(_messages.length, text);
     });
   }
 }

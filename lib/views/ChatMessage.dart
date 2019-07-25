@@ -3,27 +3,26 @@ import 'package:flutter/material.dart';
 class ChatMessage extends StatelessWidget {
   static const String _name = 'Bao';
   final String text;
-  // final AnimationController animationController;
-  final bool isSender;
+  final bool isMe;
 
-  ChatMessage(this.text, this.isSender);
+  ChatMessage(this.text, this.isMe);
 
   @override
   Widget build(BuildContext context) {
-    final align = isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start;
-    final textAlign = isSender ? TextAlign.right : TextAlign.start;
+    final align = isMe ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+    final textAlign = isMe ? TextAlign.right : TextAlign.start;
     return Container(
       padding: const EdgeInsets.all(4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          isSender
+          isMe
               ? Container()
               : CircleAvatar(
                   child: Text(_name[0]),
                 ),
           SizedBox(
-            width: isSender ? 0.0 : 8.0,
+            width: isMe ? 0.0 : 8.0,
           ),
           Expanded(
             child: Column(
@@ -57,9 +56,9 @@ class ChatMessage extends StatelessWidget {
             ),
           ),
           SizedBox(
-            width: isSender ? 8.0 : 0.0,
+            width: isMe ? 8.0 : 0.0,
           ),
-          isSender
+          isMe
               ? CircleAvatar(
                   child: Text(_name[0]),
                 )
