@@ -35,8 +35,8 @@ class ChatScreen extends StatefulWidget {
   }
 }
 
-class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
-  final List<ChatMessageReceiver> _messages = <ChatMessageReceiver>[];
+class ChatScreenState extends State<ChatScreen> {
+  final List<ChatMessage> _messages = <ChatMessage>[];
   final TextEditingController _textController = TextEditingController();
   bool _isComposing = false;
 
@@ -55,15 +55,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
                   Flexible(
                     child: ListView.builder(
                       padding: EdgeInsets.all(8.0),
-                      // itemBuilder: (context, index) => _messages[index],
-                      itemBuilder: (buildContext, index) {
-                        return Bubble(
-                          message: 'Hi there, this is a message',
-                          time: '12:00',
-                          delivered: true,
-                          isMe: index.isEven ? false : true,
-                        );
-                      },
+                      itemBuilder: (context, index) => _messages[index],
                       itemCount: _messages.length,
                     ),
                   ),
@@ -85,13 +77,13 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         ));
   }
 
-  @override
-  void dispose() {
-    for (ChatMessageReceiver message in _messages) {
-      message.animationController.dispose();
-    }
-    super.dispose();
-  }
+  // @override
+  // dispose() {
+  //   for (ChatMessage message in _messages) {
+  //     message.animationController.dispose();
+  //   }
+  //   super.dispose();
+  // }
 
   Widget _buildTextComponent() {
     return IconTheme(
@@ -99,9 +91,7 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
         child: Container(
             padding: const EdgeInsets.only(left: 16.0),
             child: Container(
-              constraints: BoxConstraints(
-                maxHeight: 300
-              ),
+              constraints: BoxConstraints(maxHeight: 300),
               child: Row(
                 children: <Widget>[
                   Expanded(
@@ -144,96 +134,154 @@ class ChatScreenState extends State<ChatScreen> with TickerProviderStateMixin {
     setState(() {
       _isComposing = false;
     });
-    ChatMessageReceiver message = ChatMessageReceiver(
+    final isMe = _messages.length % 2 == 0;
+    ChatMessage message = ChatMessage(
         text,
-        AnimationController(
-            duration: Duration(milliseconds: 700), vsync: this),
-        true);
+        // AnimationController(duration: Duration(milliseconds: 700), vsync: this),
+        isMe);
     setState(() {
       _messages.insert(_messages.length, message);
     });
-    message.animationController.forward();
+    // message.animationController.forward();
   }
 }
 
-class ChatMessageReceiver extends StatelessWidget {
+class ChatMessage extends StatelessWidget {
   static const String _name = 'Bao';
   final String text;
-  final AnimationController animationController;
+  // final AnimationController animationController;
   final bool isSender;
 
-  ChatMessageReceiver(this.text, this.animationController, this.isSender);
+  ChatMessage(this.text, this.isSender);
 
   @override
   Widget build(BuildContext context) {
-    return SizeTransition(
-      sizeFactor:
-          CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
-      axisAlignment: 0.0,
-      child: Column(
+    final align = isSender ? CrossAxisAlignment.end : CrossAxisAlignment.start;
+    final textAlign = isSender ? TextAlign.right : TextAlign.start;
+    return Container(
+      padding: const EdgeInsets.all(4.0),
+      child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
         children: <Widget>[
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
-            child: Row(
+          isSender
+              ? Container()
+              : CircleAvatar(
+                  child: Text(_name[0]),
+                ),
+          SizedBox(
+            width: isSender ? 0.0 : 8.0,
+          ),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: align,
               children: <Widget>[
                 Container(
-                  child: isSender == false 
-                  ? CircleAvatar(
-                    child: Text(_name[0]),
-                  )
-                  : null
-                ),
-                SizedBox(
-                  width: isSender ? 0.0 : 8.0,
-                ),
-                Expanded(
-                  child: Wrap(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: BoxDecoration(
+                      color: Colors.green,
+                      borderRadius: BorderRadius.all(Radius.circular(8.0))),
+                  child: Column(
+                    crossAxisAlignment: align,
                     children: <Widget>[
-                      Container(
-                        padding: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                            color: Colors.green,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(8.0))),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: <Widget>[
-                            Text(
-                              _name,
-                              style: Theme.of(context).textTheme.subhead,
-                            ),
-                            Container(
-                              margin: const EdgeInsets.only(top: 5.0),
-                              child: Text(
-                                text,
-                                maxLines: null,
-                              ),
-                            )
-                          ],
-                        ),
+                      Text(
+                        _name,
+                        style: Theme.of(context).textTheme.subhead,
+                        textAlign: textAlign,
                       ),
+                      SizedBox(
+                        height: 1,
+                      ),
+                      Text(
+                        text,
+                        maxLines: null,
+                        textAlign: textAlign,
+                      )
                     ],
                   ),
-                ),
-                SizedBox(
-                  width: isSender ? 8.0 : 0.0,
-                ),
-                Container(
-                  child: isSender 
-                  ? CircleAvatar(
-                    child: Text(_name[0]),
-                  )
-                  : null
-                ),
+                )
               ],
             ),
           ),
+          SizedBox(
+            width: isSender ? 8.0 : 0.0,
+          ),
+          isSender
+              ? CircleAvatar(
+                  child: Text(_name[0]),
+                )
+              : Container()
         ],
       ),
     );
+
+    // return SizeTransition(
+    //   sizeFactor:
+    //       CurvedAnimation(parent: animationController, curve: Curves.easeInOut),
+    //   axisAlignment: 0.0,
+    //   child: Column(
+    //     crossAxisAlignment: CrossAxisAlignment.start,
+    //     mainAxisSize: MainAxisSize.min,
+    //     children: <Widget>[
+    //       Container(
+    //         padding: EdgeInsets.symmetric(horizontal: 4.0, vertical: 4.0),
+    //         child: Row(
+    //           children: <Widget>[
+    //             Container(
+    //               child: isSender == false
+    //               ? CircleAvatar(
+    //                 child: Text(_name[0]),
+    //               )
+    //               : null
+    //             ),
+    //             SizedBox(
+    //               width: isSender ? 0.0 : 8.0,
+    //             ),
+    //             Expanded(
+    //               child: Wrap(
+    //                 children: <Widget>[
+    //                   Container(
+    //                     padding: const EdgeInsets.all(8.0),
+    //                     decoration: BoxDecoration(
+    //                         color: Colors.green,
+    //                         borderRadius:
+    //                             BorderRadius.all(Radius.circular(8.0))),
+    //                     child: Column(
+    //                       crossAxisAlignment: CrossAxisAlignment.start,
+    //                       mainAxisSize: MainAxisSize.min,
+    //                       children: <Widget>[
+    //                         Text(
+    //                           _name,
+    //                           style: Theme.of(context).textTheme.subhead,
+    //                         ),
+    //                         Container(
+    //                           margin: const EdgeInsets.only(top: 5.0),
+    //                           child: Text(
+    //                             text,
+    //                             maxLines: null,
+    //                           ),
+    //                         )
+    //                       ],
+    //                     ),
+    //                   ),
+    //                 ],
+    //               ),
+    //             ),
+    //             SizedBox(
+    //               width: isSender ? 8.0 : 0.0,
+    //             ),
+    //             Container(
+    //               child: isSender
+    //               ? CircleAvatar(
+    //                 child: Text(_name[0]),
+    //               )
+    //               : null
+    //             ),
+    //           ],
+    //         ),
+    //       ),
+    //     ],
+    //   ),
+    // );
   }
 }
 
