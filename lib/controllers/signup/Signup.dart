@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:friendly_chat/controllers/signup/Signup.dart';
+import 'package:flutter/services.dart';
 
-class Login extends StatefulWidget {
+class Signup extends StatefulWidget {
   @override
-  _LoginState createState() => _LoginState();
+  _SignupState createState() => _SignupState();
 }
 
-class _LoginState extends State<Login> {
+class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(title: Text('Login')),
+      appBar: AppBar(title: Text('Sign Up')),
       body: Center(
         child: Container(
           constraints: BoxConstraints(maxWidth: 0.7 * mediaQuery.size.width),
@@ -42,7 +42,24 @@ class _LoginState extends State<Login> {
                     hintStyle: TextStyle(color: Colors.black38),
                     contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
                     border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20))),
+                        borderRadius: BorderRadius.circular(20)),
+                    counterText: ''),
+                style: TextStyle(color: Colors.black),
+                obscureText: true,
+              ),
+              SizedBox(
+                height: 16.0,
+              ),
+              TextFormField(
+                maxLength: 8,
+                maxLines: 1,
+                decoration: InputDecoration(
+                    hintText: 'Confirm your password',
+                    hintStyle: TextStyle(color: Colors.black38),
+                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                    border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20)),
+                    counterText: ''),
                 style: TextStyle(color: Colors.black),
                 obscureText: true,
               ),
@@ -53,36 +70,11 @@ class _LoginState extends State<Login> {
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(24.0)),
                 child: Text(
-                  'Login',
+                  'Register',
                   style: TextStyle(color: Colors.white, fontSize: 17.0),
                 ),
-                onPressed: () {
-                },
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                'OR',
-                style: TextStyle(fontSize: 13.0, color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              FlatButton(
-                child: Text('Register new account',
-                    style: TextStyle(
-                      color: Colors.green,
-                      decoration: TextDecoration.underline
-                    )),
-                onPressed: () {
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context) => Signup()),
-                  );
-                },
-              ),
+                onPressed: () {},
+              )
             ],
           ),
         ),

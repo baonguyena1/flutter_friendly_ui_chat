@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:friendly_chat/controllers/ChatScreen.dart';
 import 'package:friendly_chat/controllers/login/Login.dart';
 
 void main() => runApp(FriendlyChatApp());
