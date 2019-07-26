@@ -22,6 +22,12 @@ class ChatScreenState extends State<ChatScreen> {
           title: Text('Friendly App'),
           elevation:
               Theme.of(context).platform == TargetPlatform.iOS ? 0.0 : 4.0,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.exit_to_app),
+              onPressed: _handleLogout,
+            )
+          ],
         ),
         body: SafeArea(
           child: Container(
@@ -109,5 +115,9 @@ class ChatScreenState extends State<ChatScreen> {
       final message = ChatMessageModel(text, isMe);
       _messages.insert(_messages.length, message);
     });
+  }
+
+  void _handleLogout() {
+    Navigator.of(context).pushReplacementNamed('/login');
   }
 }

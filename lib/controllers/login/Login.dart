@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:friendly_chat/controllers/signup/Signup.dart';
+import 'package:friendly_chat/services/AuthService.dart';
+import 'package:friendly_chat/views/LoadingView.dart';
 
 class Login extends StatefulWidget {
   @override
@@ -81,9 +83,7 @@ class _LoginState extends State<Login> {
                     'Login',
                     style: TextStyle(color: Colors.white, fontSize: 17.0),
                   ),
-                  onPressed: () {
-                    Navigator.of(context).pushReplacementNamed('/chat');
-                  },
+                  onPressed: _login,
                 ),
                 SizedBox(
                   height: 10.0,
@@ -119,5 +119,17 @@ class _LoginState extends State<Login> {
     setState(() {
       _passwordVisible = !_passwordVisible;
     });
+  }
+
+  void _login() {
+    LoadingView.showLoading(context);
+    AuthService.login()
+      .then((result) {
+        print(result);
+        LoadingView.hideLoading(context);
+        if (result) {
+          Navigator.of(context).pushReplacementNamed('/chat');
+        }
+      });
   }
 }
