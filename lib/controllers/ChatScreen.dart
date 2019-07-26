@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:friendly_chat/models/ChatMessageModel.dart';
 import 'package:friendly_chat/views/ChatMessage.dart';
 
 class ChatScreen extends StatefulWidget {
@@ -10,7 +11,7 @@ class ChatScreen extends StatefulWidget {
 }
 
 class ChatScreenState extends State<ChatScreen> {
-  final List<String> _messages = <String>[];
+  final List<ChatMessageModel> _messages = <ChatMessageModel>[];
   final TextEditingController _textController = TextEditingController();
   bool _isComposing = false;
 
@@ -30,9 +31,8 @@ class ChatScreenState extends State<ChatScreen> {
                     child: ListView.builder(
                       padding: EdgeInsets.all(8.0),
                       itemBuilder: (context, index) {
-                        final isMe = _messages.length % 2 == 0;
                         final message = _messages[index];
-                        return ChatMessage(message, isMe);
+                        return ChatMessage(message.text, message.isMe);
                       },
                       itemCount: _messages.length,
                     ),
@@ -105,7 +105,9 @@ class ChatScreenState extends State<ChatScreen> {
       _isComposing = false;
     });
     setState(() {
-      _messages.insert(_messages.length, text);
+      final isMe = _messages.length % 2 == 0;
+      final message = ChatMessageModel(text, isMe);
+      _messages.insert(_messages.length, message);
     });
   }
 }

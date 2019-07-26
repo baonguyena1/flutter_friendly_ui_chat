@@ -89,7 +89,7 @@ class _SignupState extends State<Signup> {
                           border: InputBorder.none,
                           counterText: '',
                           suffixIcon: IconButton(
-                            icon: Icon(_passwordVisible
+                            icon: Icon(_confirmPasswordVisible
                                 ? Icons.visibility
                                 : Icons.visibility_off),
                             color: Theme.of(context).primaryColorDark,
