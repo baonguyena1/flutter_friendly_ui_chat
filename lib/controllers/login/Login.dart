@@ -7,86 +7,111 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
+  bool _passwordVisible = false;
+
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(title: Text('Login')),
-      body: Center(
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 0.7 * mediaQuery.size.width),
-          child: ListView(
-            shrinkWrap: true,
-            children: <Widget>[
-              TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                decoration: InputDecoration(
-                  hintText: 'Enter your email',
-                  hintStyle: TextStyle(color: Colors.black38),
-                  contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+      body: GestureDetector(
+        behavior: HitTestBehavior.opaque,
+        onTap: () {
+          FocusScope.of(context).requestFocus(FocusNode());
+        },
+        child: Center(
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 0.7 * mediaQuery.size.width),
+            child: ListView(
+              physics: NeverScrollableScrollPhysics(),
+              shrinkWrap: true,
+              children: <Widget>[
+                Container(
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10.0),
+                      border: Border.all(color: Colors.grey)),
+                  child: Column(
+                    children: <Widget>[
+                      TextFormField(
+                        decoration: InputDecoration(
+                            hintText: 'Enter your email',
+                            hintStyle: TextStyle(color: Colors.black38),
+                            contentPadding:
+                                EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                            border: InputBorder.none),
+                        style: TextStyle(color: Colors.black),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(left: 20.0),
+                        child: Divider(
+                          height: 2,
+                        ),
+                      ),
+                      TextFormField(
+                        maxLength: 8,
+                        maxLines: 1,
+                        decoration: InputDecoration(
+                          hintText: 'Enter your password',
+                          hintStyle: TextStyle(color: Colors.black38),
+                          contentPadding:
+                              EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
+                          border: InputBorder.none,
+                          counterText: '',
+                          suffixIcon: IconButton(
+                            icon: Icon(_passwordVisible ? Icons.visibility : Icons.visibility_off),
+                            color: Theme.of(context).primaryColorDark,
+                            onPressed: _changePasswordVisible,
+                          )
+                        ),
+                        style: TextStyle(color: Colors.black),
+                        obscureText: !_passwordVisible,
+                      ),
+                    ],
                   ),
                 ),
-                style: TextStyle(color: Colors.black),
-              ),
-              SizedBox(
-                height: 16.0,
-              ),
-              TextFormField(
-                maxLength: 8,
-                maxLines: 1,
-                decoration: InputDecoration(
-                    hintText: 'Enter your password',
-                    hintStyle: TextStyle(color: Colors.black38),
-                    contentPadding: EdgeInsets.fromLTRB(20.0, 10.0, 20.0, 10.0),
-                    border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(20))),
-                style: TextStyle(color: Colors.black),
-                obscureText: true,
-              ),
-              SizedBox(
-                height: 30.0,
-              ),
-              RaisedButton(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(24.0)),
-                child: Text(
-                  'Login',
-                  style: TextStyle(color: Colors.white, fontSize: 17.0),
+                SizedBox(
+                  height: 30.0,
                 ),
-                onPressed: () {
-                },
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Text(
-                'OR',
-                style: TextStyle(fontSize: 13.0, color: Colors.grey),
-                textAlign: TextAlign.center,
-              ),
-              SizedBox(
-                height: 10.0,
-              ),
-              FlatButton(
-                child: Text('Register new account',
-                    style: TextStyle(
-                      color: Colors.green,
-                      decoration: TextDecoration.underline
-                    )),
-                onPressed: () {
-                  Navigator.push(
-                    context, 
-                    MaterialPageRoute(builder: (context) => Signup()),
-                  );
-                },
-              ),
-            ],
+                RaisedButton(
+                  color: Colors.blue,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(10.0)),
+                  child: Text(
+                    'Login',
+                    style: TextStyle(color: Colors.white, fontSize: 17.0),
+                  ),
+                  onPressed: () {
+                    Navigator.of(context).pushReplacementNamed('/chat');
+                  },
+                ),
+                SizedBox(
+                  height: 10.0,
+                ),
+                FlatButton(
+                  child: Text('Create an account',
+                      style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.blue,
+                          decoration: TextDecoration.underline)),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(builder: (context) => Signup()),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
     );
+  }
+
+  void _changePasswordVisible() {
+    setState(() {
+      _passwordVisible = !_passwordVisible;
+    });
   }
 }
