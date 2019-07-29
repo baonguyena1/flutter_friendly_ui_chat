@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:friendly_chat/models/ChatMessageModel.dart';
-import 'package:friendly_chat/views/ChatMessage.dart';
+import 'package:friendly_chat/widgets/chat_message_widget.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
